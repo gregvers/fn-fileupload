@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Presentation Upload</title>
+</head>
+<body>
+
+  <p id="name" style="display:inline"></p>, please upload your presentation for session <p id="sessionid" style="display:inline"></p>
+
+	<form enctype="multipart/form-data" method="POST">
+		<input type="file" name="file" />
+		<input type="submit" value="Upload File" name="submit">
+	</form>
+
+	<script>
+    const PAR_url = '$PAR_URL'
+    const name = '$name'
+    const sessionid = '$sessionid'
+
+    document.getElementById("name").innerHTML = name;
+    document.getElementById("sessionid").innerHTML = sessionid;
+
+    document.querySelector('form').addEventListener('submit', e => {
+      e.preventDefault()
+      let file = document.querySelector('[type=file]').files[0]
+      let filename = file.name
+      fetch(PAR_url + filename, {
+        method: 'PUT',
+        body: file,
+      }).then(response => {
+        console.log(response)
+      })
+      fetch(PAR_url + filename + ".json", {
+        method: 'PUT',
+        body: JSON.stringify({"name": name, "sessionid": sessionid}),
+      }).then(response => {
+        console.log(response)
+      })
+    })
+	</script>
+</body>
+</html>
